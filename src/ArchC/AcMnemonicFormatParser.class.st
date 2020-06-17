@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'percentId',
 		'normal',
-		'escape'
+		'escape',
+		'modifier'
 	],
 	#classInstVars : [
 		'maps'
@@ -35,8 +36,11 @@ AcMnemonicFormatParser >> allOperandTypes [
 
 { #category : #grammar }
 AcMnemonicFormatParser >> builtinOperandType: percentIdString [
-	^percentIdString asParser ==> [ :immToken |
-		BuiltinOperandChunk new ]
+	^percentIdString asParser, modifier optional  ==> [ :immTokens |
+		| imm modifierClass |
+		imm := immTokens first.
+		modifierClass := immTokens second ifNil: [ NoOperandModifier ].
+		BuiltinOperandChunk type: imm modifier: modifierClass ]
 ]
 
 { #category : #grammar }
@@ -48,6 +52,14 @@ AcMnemonicFormatParser >> builtinOperandTypes [
 AcMnemonicFormatParser >> escape [
 	^'\%' asParser ==> [ :x | LiteralTextChunk char: $% ]
 
+]
+
+{ #category : #grammar }
+AcMnemonicFormatParser >> modifier [
+	^$( asParser, #letter asParser star flatten, $) asParser ==> [ :x |
+		| modifierName |
+		modifierName := x second.
+		modifierName asUppercase asClassIfAbsent: [ self error: 'Unknown operand modifier ', modifierName ] ]
 ]
 
 { #category : #grammar }

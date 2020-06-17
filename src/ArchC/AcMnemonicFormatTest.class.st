@@ -46,6 +46,7 @@ AcMnemonicFormatTest >> testBasicFormat [
 	parseResult := formatParser parse: 'Simple string'.
 	firstChunk := parseResult first.
 	stream := WriteStream on: String new.
+	self flag: 'NB update to the new organization'.
 	firstChunk disassembleTo: stream  inEnvironment: OrderedCollection new.
 	self assert: stream contents equals: 'S'
 ]

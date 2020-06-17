@@ -4,6 +4,12 @@ Class {
 	#category : #'ArchC-Tests'
 }
 
+{ #category : #running }
+AcDisassemblyTest >> setUp [
+	super setUp.
+	AcProcessorDescriptions reset.
+]
+
 { #category : #powerpc }
 AcDisassemblyTest >> testPowerAdd [
 	| instr |

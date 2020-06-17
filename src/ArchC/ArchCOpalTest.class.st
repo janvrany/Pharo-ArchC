@@ -15,6 +15,7 @@ ArchCOpalTest class >> initZ3Context [
 	ArchCOpalTest initZ3Context
 	"
 	Z3Context createGlobalContext.
+	AcProcessorDescriptions reset.
 	self recompile 
 ]
 
