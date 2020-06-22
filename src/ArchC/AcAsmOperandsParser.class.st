@@ -103,15 +103,7 @@ AcAsmOperandsParser >> number [
 { #category : #grammar }
 AcAsmOperandsParser >> operand [
 	^id, ($+ asParser, operand) optional
-	==> [ :x |
-		| op |
-		op := x first.
-		x last isNil
-			ifTrue: [ op ]
-			"This is for when the operand spans several fields.
-			For example, on RISC-V:
-			JAL rd, imm4+imm3+imm2+imm1"
-			ifFalse: [ #See__AcAsmOperandsParser_operand ]]
+	==> [ :x | AsmOperandInstantiation operands: x ]
 ]
 
 { #category : #grammar }
