@@ -17,7 +17,7 @@ PDLOpalPlugin >> transform [
 	| selAndPDL |
 	selAndPDL := ast assemblyISA.
 	selAndPDL isNil ifTrue: [ ^ast ].
-	
+self halt.	
 	ast := ast copy.
 	pdl := selAndPDL value.
 	self transformPragmas: (ast pragmas select: [ :p | p selector = selAndPDL key]).
@@ -52,8 +52,7 @@ PDLOpalPlugin >> transformBinaryEncoding: bv [
 { #category : #api }
 PDLOpalPlugin >> transformPragmas: anArray [
 	| asmStatements instructions |
-	asmStatements := anArray collect: [ :p |
-		p arguments first value ].
+	asmStatements := anArray collect: #firstLiteralArgument.
 	instructions := asmStatements collect: [  :s | (pdl assembler parse: s) binaryEncoding ].
 	instructions := BitVector concatAll: instructions.
 	self transformBinaryEncoding: instructions simplify
