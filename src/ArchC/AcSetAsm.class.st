@@ -29,11 +29,14 @@ AcSetAsm >> assembler [
 	| chunkParsers |
 	chunkParsers := self format collect: #assembler.
 	^(PPSequenceParser withAll: chunkParsers) ==> [ :actualOperandsFromChunks |
-		| actualOperands allOperands |
+		| actualOperands allOperands fieldValues |
 		actualOperands := actualOperandsFromChunks reject: #isNil.
 		actualOperands := Dictionary newFromKeys: self operands andValues: actualOperands.
 		allOperands := actualOperands copy addAll: constraints; yourself.
-		self instruction inEnvironment: allOperands ]
+		fieldValues := Dictionary new.
+		allOperands keysAndValuesDo: [ :opDef :v |
+				fieldValues addAll: (opDef asOperandInstantiation encodeValue: v accoringTo: instruction format) ].
+		self instruction inEnvironment: fieldValues ]
 ]
 
 { #category : #accessing }
@@ -113,7 +116,7 @@ AcSetAsm >> operands: anArray [
 
 { #category : #printing }
 AcSetAsm >> printOn: aStream [
-	aStream nextPutAll: self source
+	aStream nextPutAll: (self source ifNil: [ 'AcSetAsm (no source)' ])
 ]
 
 { #category : #accessing }

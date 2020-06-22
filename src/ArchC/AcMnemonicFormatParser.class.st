@@ -10,7 +10,7 @@ the format part in this example is
 lis %reg, %exp(carry)@ha
 
 As I am a Parser, my API is #parse:.
-I answer ... as the result.
+I answer a sequence of AcMnemonicChunks as the result.
 
 
 "

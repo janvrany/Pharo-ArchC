@@ -63,8 +63,9 @@ AcAsmOperandsParser >> constraintConstant [
 
 { #category : #grammar }
 AcAsmOperandsParser >> constraintMap [
-	^id, $= asParser, id, '.map_to("' asParser, id, '")' asParser 
-	==> [  :x | 
+	^id, $= asParser, id, '.map_to("' asParser,
+		(PPPredicateObjectParser anyExceptAnyOf: '"' ) star flatten,
+		'")' asParser 	==> [  :x | 
 		| map targetOperand arg |
 		targetOperand := x first.
 		map := self class pdl maps at: x third.

@@ -20,7 +20,7 @@ ArchCOpalTest class >> initZ3Context [
 
 { #category : #arm }
 ArchCOpalTest >> and1 [
-	<armv5: 'andgts a1, a1, sp'>
+	<armv5: 'andgts a1, a1, sp'> 
 ]
 
 { #category : #powerpc }

@@ -32,6 +32,39 @@ AsmOperandInstantiation class >> singleOperand: op [
 	^self new operands: (OrderedCollection with: op)
 ]
 
+{ #category : #'as yet unclassified' }
+AsmOperandInstantiation >> asOperandInstantiation [
+	^self
+]
+
+{ #category : #private }
+AsmOperandInstantiation >> encodeBitVector: v inFields: fields accordingTo: format [ 
+	| thisField thisWidth thisBV restFields rest restBV |
+	"Fields go in order starting with MSB, ending with LSB."
+	fields size = 1 ifTrue: [ 
+		"induction base"
+		^Dictionary new
+			at: fields first 
+			put: v;
+			yourself
+	].
+	thisField := fields last.
+	thisWidth := format widthOf: thisField.
+	thisBV := v copyFrom: thisWidth - 1 to: 0.
+	restBV := v copyFrom: v length - 1 to: thisWidth.
+	restFields := fields allButLast.
+	rest := self encodeBitVector: restBV simplify inFields: restFields accordingTo: format.
+	rest at: thisField put: thisBV.
+	^rest
+]
+
+{ #category : #private }
+AsmOperandInstantiation >> encodeSimpleValue: v [
+	^Dictionary new
+		at: self operand put: v;
+		yourself
+]
+
 { #category : #rewriting }
 AsmOperandInstantiation >> inEnvironment: aDictionary format: f [
 	^self operands collect: [ :subfield |
@@ -60,4 +93,25 @@ AsmOperandInstantiation >> operands [
 { #category : #accessing }
 AsmOperandInstantiation >> operands: anObject [
 	operands := anObject
+]
+
+{ #category : #printing }
+AsmOperandInstantiation >> printOn: aStream [
+	aStream nextPutAll: self operands first.
+	self isMultiField ifTrue: [ self printRestOfOperandsOn: aStream ]
+]
+
+{ #category : #printing }
+AsmOperandInstantiation >> printRestOfOperandsOn: aStream [
+	self operands allButFirst do: [ :field |
+		aStream
+			nextPut: $+;
+			nextPutAll: field ].
+]
+
+{ #category : #'as yet unclassified' }
+AsmOperandInstantiation >> widthAccordingTo: format [
+	^self operands inject: 0 into: [ :soFar :currentField |
+		soFar + (format widthOf: currentField)
+	]
 ]
