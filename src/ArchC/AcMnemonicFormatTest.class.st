@@ -1,6 +1,6 @@
 Class {
 	#name : #AcMnemonicFormatTest,
-	#superclass : #TestCaseWithZ3Context,
+	#superclass : #TestCase,
 	#category : #'ArchC-Tests'
 }
 
@@ -14,7 +14,7 @@ AcMnemonicFormatTest >> forSPARC [
 	^AcSetAsmParser pdl: AcProcessorDescriptions sparcv8
 ]
 
-{ #category : #powerpc }
+{ #category : #generic }
 AcMnemonicFormatTest >> proc: parser spec: aSetAsmString operandKeys: k operandValues: v expect: e [
 	| env parseResult s |
 	parseResult := parser parse: aSetAsmString.

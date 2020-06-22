@@ -1,3 +1,19 @@
+"
+I parse the ""printf-like format"" part of the ""instruction syntax variant"".
+For example,
+
+""lis %reg, %exp(carry)@ha"", rt, ra=0, d
+
+is one assembly syntax variant for the addis instruction on PowerPC;
+the format part in this example is
+
+lis %reg, %exp(carry)@ha
+
+As I am a Parser, my API is #parse:.
+I answer ... as the result.
+
+
+"
 Class {
 	#name : #AcMnemonicFormatParser,
 	#superclass : #PPCompositeParser,
