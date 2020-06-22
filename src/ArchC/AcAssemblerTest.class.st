@@ -1,6 +1,6 @@
 Class {
 	#name : #AcAssemblerTest,
-	#superclass : #TestCaseWithZ3Context,
+	#superclass : #TestCase,
 	#category : #'ArchC-Tests'
 }
 
@@ -11,6 +11,12 @@ AcAssemblerTest >> isa: aSymbol assemble: source operandKeys: keys shouldBe: val
 	result := pdl assembler parse: source.
 	expected := Dictionary newFromKeys: keys andValues: values.
 	self assert: result allBindingValues equals: expected 
+]
+
+{ #category : #running }
+AcAssemblerTest >> resetZ3Context [
+	Z3Context createGlobalContext.
+	AcProcessorDescriptions reset.
 ]
 
 { #category : #powerpc }
