@@ -45,16 +45,25 @@ AcCommonParser class >> newline [
 ]
 
 { #category : #API }
-AcCommonParser class >> parseFile: fileName in: path [
-	| f s |
+AcCommonParser class >> parseFile: filePath in: currentWorkDir [
+	| fileStream fileContents newWorkDir parser result |
 	[ 
-		f := FileStream fileNamed: path, '/', fileName.
-		s := f contentsOfEntireFile.
+		fileStream := FileStream fileNamed: currentWorkDir, '/', filePath.
+		fileContents := fileStream contentsOfEntireFile.
 	] ensure: [ 
-		f close.
+		fileStream close.
 	].
-	^(self inWorkingDirectory: path)
-		parse: s
+	(filePath includes: $/) ifTrue: [
+		| fileDir |
+
+		fileDir := filePath copyFrom: 1 to: (filePath lastIndexOf: $/) - 1.
+		newWorkDir := currentWorkDir , '/' , fileDir
+	] ifFalse: [ 
+		newWorkDir := currentWorkDir
+	].
+	parser := self inWorkingDirectory: newWorkDir.
+	result := parser parse: fileContents.
+	^ result.
 ]
 
 { #category : #grammar }
