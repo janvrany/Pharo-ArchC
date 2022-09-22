@@ -135,7 +135,15 @@ AcCommonParser >> number [
 
 { #category : #context }
 AcCommonParser >> parse: anObject withContext: aPPContext [
-	^ super parse: (self strip: anObject) withContext: aPPContext
+	| result |
+
+	result := super parse: (self strip: anObject) withContext: aPPContext.
+	result isPetitFailure ifTrue: [
+		aPPContext stream position: result position.
+		self error: 'Failed to parse file in ', directory, ': ' , result printString.
+		^ nil
+	].
+	^ result
 ]
 
 { #category : #grammar }

@@ -183,13 +183,28 @@ AcIsaParser >> behavior [
 		'ac_behavior' -> (x first -> x third) ]
 ]
 
+{ #category : #'grammar - gensim' }
+AcIsaParser >> behaviour [
+	"genim extension, ignored"
+
+	^('ac_behaviour' asParser trim, idList, ';' asParser)
+	==> [ :x | nil ]
+]
+
+{ #category : #'grammar - gensim' }
+AcIsaParser >> behaviours [
+	"gensim extension, ignore"
+
+	^'ac_behaviours("' asParser, $" asParser negate star flatten, '");' asParser
+	==> [ :x | nil ]
+]
+
 { #category : #grammar }
 AcIsaParser >> bitfield [
 	"Instruction encoding fields like %opcode:6."
 	
-	^ ((percentId / number) , $: asParser , number , ':s' asParser optional) 
+	^ ((percentId / number) , $: asParser , number , (':s' asParser / ':' asParser) optional) 
 		==> [:nodes | AcInstructionBitfield name: nodes first width: nodes third signed: nodes fourth notNil ]
-
 ]
 
 { #category : #grammar }
@@ -213,8 +228,21 @@ AcIsaParser >> cstorStatement [
 	delay /
 	delayCond /
 	pseudoInstr /
-	assemblerComment
+	assemblerComment /
+	self cstorStatementGenSimExtensions
+]
 
+{ #category : #grammar }
+AcIsaParser >> cstorStatementGenSimExtensions [
+	"
+	Parse extensions added by GenSim project [1]. Generally,
+	they're just ignored.
+
+	[1]: https://github.com/gensim-project/gensim
+	"
+	^ self setExtras /
+	self behaviours /
+	self execute
 ]
 
 { #category : #grammar }
@@ -225,8 +253,7 @@ AcIsaParser >> ctor [
 	'{' asParser trim,
 	cstorStatement trim star,
 	'};' asParser trim
-	==> [ :x | x at: 5 ]
-
+	==> [ :x | (x at: 5) reject: [ :e | e isNil ]]
 ]
 
 { #category : #grammar }
@@ -252,6 +279,30 @@ AcIsaParser >> error: l incommensurable: r [
 	self error: l printString, ' incommensurable to ', r printString
 ]
 
+{ #category : #'grammar - gensim' }
+AcIsaParser >> execute [
+	"gensim extension, ignore"
+
+	^'ac_execute("' asParser, $" asParser negate star flatten, '");' asParser
+	==> [ :x | nil ]
+]
+
+{ #category : #'grammar - gensim' }
+AcIsaParser >> fetchsize [
+	"genim extension, ignored"
+
+	^('ac_fetchsize' asParser trim, number trim, ';' asParser)
+	==> [ :x | nil ]
+]
+
+{ #category : #'grammar - gensim' }
+AcIsaParser >> field [
+	"genim extension, ignored"
+
+	^('ac_field' asParser trim, '<' asParser trim , id , '>' asParser trim, id, ';' asParser)
+	==> [ :x | nil ]
+]
+
 { #category : #grammar }
 AcIsaParser >> format [
 	^'ac_format' asParser,
@@ -274,6 +325,14 @@ AcIsaParser >> helper [
 AcIsaParser >> idEqualNumber [
 	^id , $= asParser trim, number
 	==> [ :x | Association key: x first value: x last ]
+]
+
+{ #category : #'grammar - gensim' }
+AcIsaParser >> include [
+	"gensim extension"
+
+	^'include("' asParser, $" asParser negate star flatten, '");' asParser
+	==> [ :x | self class parseFile: x second in: directory ]
 ]
 
 { #category : #grammar }
@@ -305,8 +364,23 @@ AcIsaParser >> instructionStatement [
 	asmMap /
 	ctor /
 	helper /
-	riscvOpcodes
+	riscvOpcodes /
+	self instructionStatementGenSimExtensions
+]
 
+{ #category : #grammar }
+AcIsaParser >> instructionStatementGenSimExtensions [
+	"
+	Parse extensions added by GenSim project [1]. Generally,
+	they're just ignored.
+
+	[1]: https://github.com/gensim-project/gensim
+	"
+	^ self fetchsize /
+	self include /
+	self behaviour /
+	self field /
+	self predicated
 ]
 
 { #category : #grammar }
@@ -343,6 +417,14 @@ AcIsaParser >> isa [
 AcIsaParser >> percentId [
 	^$% asParser, id
 	==> [ :x | x last ]
+]
+
+{ #category : #'grammar - gensim' }
+AcIsaParser >> predicated [
+	"genim extension, ignored"
+
+	^('ac_predicated' asParser trim, str trim, ';' asParser)
+	==> [ :x | nil ]
 ]
 
 { #category : #grammar }
@@ -435,9 +517,25 @@ AcIsaParser >> setDecoder [
 	$  asParser star,
 	$( asParser,
 	$  asParser star,
-	associationList,
+	associationList optional,
 	');' asParser trim
 	==> [ :x | 'set_decoder' -> (x first -> x sixth) ]
+]
+
+{ #category : #grammar }
+AcIsaParser >> setExtras [
+	"gensim extensions, ignored."
+	
+	^ (id , '.set_' asParser , (';' asParser not , #any asParser) star, ';' asParser) ==> [:x | nil ]
+
+	"
+	 AcIsaParser new setExtras parse: 'addi.set_behaviour(addi);'
+	 AcIsaParser new instructionStatement parse: 'addi.set_behaviour(addi);'
+	 AcIsaParser new instructionStatement parse: 'addi.set_behaviour(addi);'
+	 AcIsaParser new instructionStatement parse: 'cbz.set_fixed_predicated_jump(imms64, RELATIVE, 0);'
+	 AcIsaParser new instructionStatement parse: 'cbz.set_end_of_block();'
+
+	"
 ]
 
 { #category : #grammar }
@@ -445,7 +543,7 @@ AcIsaParser >> start [
 	^isa end
 		==> [ :x | x asOrderedCollection
 			inject: OrderedCollection new
-			into: [ :soFar :elem | soFar addAll: elem; yourself ]]
+			into: [ :soFar :elem | elem notNil ifTrue:[soFar addAll: elem]. soFar ]]
 ]
 
 { #category : #grammar }

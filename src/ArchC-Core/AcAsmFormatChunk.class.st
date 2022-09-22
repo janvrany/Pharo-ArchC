@@ -31,7 +31,8 @@ AcAsmFormatChunk class >> builtin: aString modifier: anAcAsmOperandModifier [
 
 { #category : #accessing }
 AcAsmFormatChunk class >> builtins [
-	^ #('%imm' '%exp' '%addr')
+	^ #('%imm' '%exp' '%addr'                   "Original ArchC builtines"
+		'%hex' '%hex32' '%reladdr' '%exttype')  "GenSim builtins"
 ]
 
 { #category : #'instance creation' }

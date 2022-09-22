@@ -11,6 +11,15 @@ Class {
 }
 
 { #category : #'known processors' }
+AcProcessorDescriptions class >> aarch64 [
+	^self processor: 'aarch64' in: 'aarch64'
+
+	"
+	AcProcessorDescriptions reset; aarch64.
+	"
+]
+
+{ #category : #'known processors' }
 AcProcessorDescriptions class >> amd64 [
 	"BOGUS -- ArchC doesn't have a PDL for AMD64."
 	^self processor: 'AMD64' in: 'amd64'

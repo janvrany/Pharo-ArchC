@@ -59,6 +59,27 @@ AcAssemblerTest >> testADDwithSpacesOrNot [
 
 ]
 
+{ #category : #aarch64 }
+AcAssemblerTest >> testAarch64_ldp [
+	| pdl insn |
+
+	pdl := AcProcessorDescriptions aarch64.
+	pdl instructionAt: 'ldp'.
+	insn := pdl assembler parse: 'ldp x2, x3, [x10]'.
+	self assert: insn asByteArray equals: #[16r42 16rD 16r40 16rA9]  .
+	self assert: insn disassemble equals: 'ldp x2, x3, [x10]'.
+]
+
+{ #category : #aarch64 }
+AcAssemblerTest >> testAarch64_mov [
+	| pdl insn |
+
+	pdl := AcProcessorDescriptions aarch64.
+	insn := pdl assembler parse: 'mov x0, x1'.
+	self assert: insn asByteArray equals: #[16rE0 16r03 16r01 16rAA].
+	self assert: insn disassemble equals: 'mov x0, x1'.
+]
+
 { #category : #arm }
 AcAssemblerTest >> testAdd3nonrotated [
 	self
