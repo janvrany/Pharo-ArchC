@@ -124,16 +124,8 @@ AsmOperandInstantiation >> operands: anObject [
 
 { #category : #printing }
 AsmOperandInstantiation >> printOn: aStream [
-	aStream nextPutAll: self operands first.
-	self isMultiField ifTrue: [ self printRestOfOperandsOn: aStream ]
-]
-
-{ #category : #printing }
-AsmOperandInstantiation >> printRestOfOperandsOn: aStream [
-	self operands allButFirst do: [ :field |
-		aStream
-			nextPut: $+;
-			nextPutAll: field ].
+	self operands do: [:operand | aStream nextPutAll: operand ]
+		 separatedBy: [ aStream nextPut:$+ ]
 ]
 
 { #category : #private }

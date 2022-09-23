@@ -36,8 +36,7 @@ AcAsmSyntax >> assembler [
 		fieldValues := Dictionary new.
 		allOperands keysAndValuesDo: [ :opDef :v |
 				fieldValues addAll: (opDef asOperandInstantiation encodeValue: v accoringTo: instruction format) ].
-		self instruction inEnvironment: fieldValues ]
-
+		instruction inEnvironment: fieldValues ]
 ]
 
 { #category : #accessing }
@@ -110,12 +109,32 @@ AcAsmSyntax >> instruction [
 ]
 
 { #category : #accessing }
-AcAsmSyntax >> instruction: i [
-	instruction := i.
+AcAsmSyntax >> instruction: aProcessorInstructionDeclaration [
+	instruction := aProcessorInstructionDeclaration.
 	format isString ifFalse: [ 
 		format instruction: instruction
 	].  
 
+	"Look for fields defined by intruction format but 
+	 not bound operands not constrained. 
+
+	 Such fields are either bug in the ISA model or
+	 they does not matter - that is, they can have any 
+	 value (this seem to be case of Gensim AArch64 model).
+
+	 In that case, just add them to the contraints with
+	 arbitrary value.
+	"
+	instruction format bitFields do: [ :bitfield |
+		(bitfield isFixedValue or: [instruction internalBindings includesKey: bitfield name]) ifFalse: [
+			"It's not 'fixed' so it should be either bound or constrained. Check."
+			((constraints includesKey: bitfield name)
+				or:[ operands contains: [:operand | operand operands includes: bitfield name ] ]) ifFalse: [ 
+					"Not bound, add arbitrary constraint."
+					constraints at: bitfield name put: 0.
+				].
+			].
+		 ].
 ]
 
 { #category : #testing }

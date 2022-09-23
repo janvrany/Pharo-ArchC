@@ -41,6 +41,11 @@ MockFormatPoznavach >> inEnvironment: fieldValues [
 ]
 
 { #category : #accessing }
+MockFormatPoznavach >> internalBindings [
+	^ Dictionary new
+]
+
+{ #category : #accessing }
 MockFormatPoznavach >> isa [
 	^ pdl
 
