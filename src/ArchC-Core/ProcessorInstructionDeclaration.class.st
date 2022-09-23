@@ -106,6 +106,12 @@ ProcessorInstructionDeclaration >> assertInvariants [
 			 description: 'Instruction format '' , format name , '' has not bitfield '' , bitField , ''!'.
 	].
 
+	syntax notNil ifTrue: [ 
+		syntax do: [:each | 
+			each assertInvariants
+		].
+	].
+
 	"ProcessorInstruction >> #disassemble requires syntax formats to be sorted
 	 by increaring number of operands (in assembly language, that is, a comma-separated 
 	 list of operands following mnemonic). Check that.

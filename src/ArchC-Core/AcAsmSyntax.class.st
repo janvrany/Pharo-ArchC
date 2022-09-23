@@ -39,6 +39,22 @@ AcAsmSyntax >> assembler [
 		instruction inEnvironment: fieldValues ]
 ]
 
+{ #category : #assertions }
+AcAsmSyntax >> assertInvariants [
+	"
+	Check that syntax refers only to bitfields specified in
+	the format!
+	"
+	constraints keysDo: [ :bitfieldName |
+		self assert: (instruction format hasField: bitfieldName)
+	].
+	operands do: [:operand | 
+		operand operands do: [:bitfieldName | 
+			self assert: (instruction format hasField: bitfieldName)    
+		].
+	].
+]
+
 { #category : #accessing }
 AcAsmSyntax >> constraints [
 	^ constraints
