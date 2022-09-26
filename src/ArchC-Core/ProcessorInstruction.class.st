@@ -22,10 +22,14 @@ ProcessorInstruction >> = another [
 { #category : #access }
 ProcessorInstruction >> allBindingValues [
 	| allBindings |
-	allBindings := format bitFields
-		reject: [ :bitField | bitField isFixedValue ]
-		thenCollect: [ :bitField | bitField name -> (self fieldValue: bitField name) ].
-	^Dictionary newFromAssociations: allBindings
+
+	allBindings := Dictionary new.
+	format bitFields do: [:bitField | 
+		bitField isFixedValue ifFalse: [ 
+			allBindings at: bitField name put: (self fieldValue: bitField name)
+		].
+	].
+	^ allBindings
 ]
 
 { #category : #accessing }
