@@ -74,7 +74,7 @@ AcAsmOperandModifier class >> unparseOn: aStream [
 AcAsmOperandModifier >> encode: value inFields: fs accordingTo: format [
 	^ fs isMultiField
 		ifTrue: [ fs encodeComplexValue: value accordingTo: format ]
-		ifFalse: [ fs encodeSimpleValue: value ]
+		ifFalse: [ fs encodeSimpleValue: value accordingTo: format ]
 ]
 
 { #category : #API }

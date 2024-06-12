@@ -78,11 +78,10 @@ AsmOperandInstantiation >> encodeComplexValue: value accordingTo: format [
 ]
 
 { #category : #encoding }
-AsmOperandInstantiation >> encodeSimpleValue: value [
+AsmOperandInstantiation >> encodeSimpleValue: value accordingTo: format [
 	^Dictionary new
 		at: self operand put: value;
 		yourself
-
 ]
 
 { #category : #private }
@@ -90,7 +89,7 @@ AsmOperandInstantiation >> encodeValue: value accordingTo: format [
 	value isAcAsmOperandModifier ifTrue: [
 		^ value encodeInFields: self accordingTo: format
 	] ifFalse: [
-		^ self encodeSimpleValue: value
+		^ self encodeSimpleValue: value accordingTo: format
 	]
 ]
 
