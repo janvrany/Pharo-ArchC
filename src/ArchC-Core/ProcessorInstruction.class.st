@@ -7,7 +7,8 @@ Class {
 	#name : #ProcessorInstruction,
 	#superclass : #ProcessorInstructionDeclaration,
 	#instVars : [
-		'binaryEncoding'
+		'binaryEncoding',
+		'relocation'
 	],
 	#category : #'ArchC-Core-Core'
 }
@@ -46,6 +47,14 @@ ProcessorInstruction >> binaryEncoding [
 		binaryEncoding := super binaryEncoding
 	].
 	^binaryEncoding
+]
+
+{ #category : #accessing }
+ProcessorInstruction >> declaration [
+	"Return instruction declaration for this (possibly partially) grounded
+	 instruction."
+
+	^ isa instructionAt: name
 ]
 
 { #category : #disassembly }
@@ -176,6 +185,26 @@ ProcessorInstruction >> printOn: aStream [
 	aStream nextPutAll: (self name); nextPutAll: ': '.
 	aStream nextPutAll: self disassemble.
 
+]
+
+{ #category : #accessing }
+ProcessorInstruction >> relocation [
+	^ relocation
+]
+
+{ #category : #accessing }
+ProcessorInstruction >> relocation: anAcRelocationOrNil [
+	"Set or clear relocation entry associated with this instruction."
+
+	self assert: (anAcRelocationOrNil isNil or: [ anAcRelocationOrNil isAcRelocation ]).
+	self assert: (anAcRelocationOrNil isNil or: [ anAcRelocationOrNil class isAbstract not])
+		 description: 'Invalid relocation for this instruction'.
+	self assert: (anAcRelocationOrNil isNil or: [ anAcRelocationOrNil isValidForInstruction: self])
+		 description: 'Invalid relocation for this instruction'.
+	self assert: (relocation isNil or: [ anAcRelocationOrNil isNil ])
+		 description: 'A relocation already associated'.
+
+	relocation := anAcRelocationOrNil
 ]
 
 { #category : #initialization }
