@@ -7,7 +7,6 @@ Class {
 	#name : #ProcessorInstruction,
 	#superclass : #ProcessorInstructionDeclaration,
 	#instVars : [
-		'binaryEncoding',
 		'relocation'
 	],
 	#category : #'ArchC-Core-Core'
