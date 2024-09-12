@@ -23,36 +23,10 @@ AcAsmSyntax >> assembleDSL: mnemonic operands: operandList [
 	].
 
 	operandList with: format operands  do: [:operandValue :operandFormat |
-		self assert: operandValue isAcDSLMemRef == operandFormat isMemRefChunk.
+		| operandInstantationsUsed |
 
-		"FIXME: this is not the best thing to to, we need to come up with nicer,
-		 more extensible code! But for now it will do."
-		operandValue isAcDSLMemRef ifTrue: [ 
-			| offsetDef offsetMod baseDef baseMod |
-
-			offsetDef := self operands at: operandInstantiationIdx.
-			offsetMod := operandFormat offset modifier.
-
-			baseDef := self operands at: operandInstantiationIdx + 1.
-			baseMod := operandFormat base modifier.
-
-			environment addAll: (offsetDef asOperandInstantiation encodeValue: (offsetMod new x: operandValue offset)
-									  accordingTo: instruction format).
-			environment addAll: (baseDef asOperandInstantiation encodeValue: (baseMod new x: operandValue base)
-									  accordingTo: instruction format).
-
-			operandInstantiationIdx := operandInstantiationIdx + 2.
-		] ifFalse: [
-			| operandDef operandModifier  |
-
-			operandDef := self operands at: operandInstantiationIdx.
-			operandModifier := operandFormat modifier.
-
-			environment addAll: (operandDef asOperandInstantiation encodeValue: (operandModifier new x: operandValue)
-									  accordingTo: instruction format).
-
-			operandInstantiationIdx := operandInstantiationIdx + 1.
-		].    
+		operandInstantationsUsed := operandFormat assembleDSL: operandValue into: environment usingOperandInstantiations: operands startingAt: operandInstantiationIdx.
+		operandInstantiationIdx := operandInstantiationIdx + operandInstantationsUsed.
 	].
 	self assert: operandInstantiationIdx = (self operands size + 1).
 
