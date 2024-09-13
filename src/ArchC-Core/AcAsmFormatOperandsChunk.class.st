@@ -34,7 +34,11 @@ AcAsmFormatOperandsChunk >> disassembleTo: aWriteStream operands: ops inEnvironm
 ]
 
 { #category : #'printing & storing' }
-AcAsmFormatOperandsChunk >> unparseOn: aStream [            
-	subchunks do: [:each | each unparseOn: aStream ]
-	 separatedBy: [ aStream nextPut: $,; space]
+AcAsmFormatOperandsChunk >> unparseOn: aStream [
+	subchunks last isOptionalChunk ifTrue: [ 
+		subchunks allButLast do: [:each | each unparseOn: aStream ] separatedBy: [ aStream nextPut: $,; space].
+		subchunks last unparseOn: aStream withComma: true.
+	] ifFalse: [
+		subchunks do: [:each | each unparseOn: aStream ] separatedBy: [ aStream nextPut: $,; space].
+	].
 ]

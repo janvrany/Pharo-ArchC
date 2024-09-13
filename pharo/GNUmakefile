@@ -42,6 +42,7 @@ test: build
 	ARCHC_PDL_DIR=$(ARCHC_PDL_DIR)/ $(PHARO_VM_HEADLESS) $(PROJECT).image test --fail-on-failure \
 		"ArchC-Core-Tests" \
 		"ArchC-RISCV-Tests" \
+		"ArchC-AArch64-Tests" \
 		"ArchC-DSL-Tests"
 
 clean::

@@ -15,9 +15,11 @@ ManifestBaselineOfArchC class >> includedInPreRequisites [
 		#'BaselineOfMachineArithmetic'
 		#'ArchC-Core'
 		#'ArchC-RISCV'
+		#'ArchC-AArch64'
 		#'ArchC-DSL'
 		#'ArchC-Core-Tests'
 		#'ArchC-RISCV-Tests'
+		#'ArchC-AArch64-Tests'
 		#'ArchC-DSL-Tests'
 	)
 ]

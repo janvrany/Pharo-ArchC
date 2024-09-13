@@ -36,7 +36,8 @@ Class {
 		'strList',
 		'asmMapBody1',
 		'asmMapBody2',
-		'riscvOpcodes'
+		'riscvOpcodes',
+		'aarch64Opcodes'
 	],
 	#category : #'ArchC-Core-Parsing'
 }
@@ -75,6 +76,23 @@ AcIsaParser class >> constructAsmMap: assocs [
 					cardinalities at: int put: cardinality.
 					answer at: int put: sym ] ] ] ].
 	^answer
+]
+
+{ #category : #grammar }
+AcIsaParser >> aarch64Opcodes [
+	"Pharo-ArchC extension - read AArch64 instruction .xml from
+	 ARM's exploration tools.
+	"
+
+	^'_ac_aarch64_opcodes("' asParser, $" asParser negate star flatten, '");' asParser
+	==> [ :x |
+
+		| aarch64OpcodesParser |
+
+		aarch64OpcodesParser := Smalltalk at: #AcAArch64OpcodeParser
+					  ifAbsent: [ self error: 'No AArch64 opcodes parser, please load package ArchC-AArch64' ].
+		aarch64OpcodesParser parseFile: x second in: directory
+		]
 ]
 
 { #category : #grammar }
@@ -305,8 +323,8 @@ AcIsaParser >> instructionStatement [
 	asmMap /
 	ctor /
 	helper /
-	riscvOpcodes
-
+	riscvOpcodes /
+	aarch64Opcodes
 ]
 
 { #category : #grammar }

@@ -45,6 +45,7 @@ test: build
 		--run Builder::ReportRunner -r Builder::TestReport --fail-on-failure \
 			-p "ArchC-Core-Tests" \
 			-p "ArchC-RISCV-Tests" \
+			-p "ArchC-AArch64-Tests" \
 			-p "ArchC-DSL-Tests"
 
 clean::

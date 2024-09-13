@@ -220,7 +220,9 @@ ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
 
 	format isString ifTrue: [ 
 		format := isa instructionFormats at: format
-	].     
+	] ifFalse: [
+		(isa instructionFormats at: format name asString put: format)
+	].
 	syntax notNil ifTrue: [ 
 		syntax withIndexDo: [ :mnemonicSpecOrString :index |
 			mnemonicSpecOrString isString ifTrue: [ 
