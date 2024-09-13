@@ -114,6 +114,7 @@ AcInstructionFormat >> opcdFieldName [
 	| opcdFields |
 	opcdFields :=  bitfields
 		select: [ :f | f key = 'op' or: [ f key = 'opcd' or: [ f key = 'opcode' ] ] ].
+	opcdFields isEmpty ifTrue: [ ^ nil ].
 	opcdFields size = 1 ifFalse: [self error].
 	^opcdFields first key
 ]

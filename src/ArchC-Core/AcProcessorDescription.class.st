@@ -335,6 +335,7 @@ AcProcessorDescription >> hasOpcodeField [
 	| opcdFieldName |
 
 	opcdFieldName := instructionFormats values anyOne opcdFieldName.
+	opcdFieldName isNil ifTrue: [ ^ false ].
 	instructionFormats do: [:format | 
 		(format hasField: opcdFieldName) ifFalse: [ ^ false ].
 	].
