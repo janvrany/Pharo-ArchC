@@ -85,10 +85,12 @@ AcAsmFormatParser >> format [
 
 { #category : #grammar }
 AcAsmFormatParser >> map [
-	^( ($% asParser ,   #letter asParser plus flatten ) /
-	   ('%[' asParser , #letter asParser plus flatten , ']' asParser) )
-	   ==> [ :nodes | AcAsmFormatChunk map: nodes second ]
+	| id |
 
+	id := (#letter asParser , (#letter asParser / #digit asParser) star) flatten.
+	^( ($% asParser , id ) /
+	   ('%[' asParser , id , ']' asParser) )
+	   ==> [ :nodes | AcAsmFormatChunk map: nodes second ]
 ]
 
 { #category : #grammar }
