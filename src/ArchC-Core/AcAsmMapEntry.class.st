@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'name',
 		'value',
-		'cardinality'
+		'cardinality',
+		'map'
 	],
 	#category : #'ArchC-Core-Core'
 }
@@ -33,6 +34,16 @@ AcAsmMapEntry >> cardinality [
 AcAsmMapEntry >> key [
 	"For compatibility with association"
 	^ name
+]
+
+{ #category : #accessing }
+AcAsmMapEntry >> map [
+	^ map
+]
+
+{ #category : #initialization }
+AcAsmMapEntry >> map: mapArg [
+	map := mapArg
 ]
 
 { #category : #accessing }

@@ -81,6 +81,8 @@ AcAsmMap >> name: nameArg entries: entriesArg [
 	backMap := Dictionary new.
 	entries do: [ :entry |
 			| existingCardinality entryCardinality entryValue entryName |
+
+			entry map: self.
 			entryCardinality := entry cardinality.
 			entryValue := entry value.
 			entryName := entry name.
