@@ -6,7 +6,8 @@ Class {
 		'instruction',
 		'format',
 		'operands',
-		'constraints'
+		'constraints',
+		'dontcares'
 	],
 	#category : #'ArchC-Core-Core'
 }
@@ -32,7 +33,7 @@ AcAsmSyntax >> assembler [
 		| actualOperands allOperands fieldValues |
 		actualOperands := actualOperandsFromChunks reject: #isNil.
 		actualOperands := Dictionary newFromKeys: self operands andValues: actualOperands.
-		allOperands := actualOperands copy addAll: constraints; yourself.
+		allOperands := actualOperands copy addAll: constraints; addAll: dontcares; yourself.
 		fieldValues := Dictionary new.
 		allOperands keysAndValuesDo: [ :opDef :v |
 				fieldValues addAll: (opDef asOperandInstantiation encodeValue: v
@@ -110,12 +111,33 @@ AcAsmSyntax >> instruction [
 ]
 
 { #category : #accessing }
-AcAsmSyntax >> instruction: i [
-	instruction := i.
+AcAsmSyntax >> instruction: aProcessorInstructionDeclaration [
+	instruction := aProcessorInstructionDeclaration.
 	format isString ifFalse: [ 
 		format instruction: instruction
 	].  
 
+	"Look for fields defined by intruction format but
+	 not bound operands not constrained.
+
+	 Such fields are either bug in the ISA model or
+	 they does not matter - that is, they can have any
+	 value (this seem to be case of Gensim AArch64 model).
+
+	 In that case, just add them to the `dontcares` with
+	 zero value.
+	"
+	dontcares := SmallDictionary new:1.
+	instruction format bitFields do: [ :bitfield |
+		(bitfield isFixedValue or: [instruction internalBindings includesKey: bitfield name]) ifFalse: [
+			"It's not 'fixed' so it should be either bound or constrained. Check."
+			((constraints includesKey: bitfield name)
+				or:[ operands contains: [:operand | operand operands includes: bitfield name ] ]) ifFalse: [
+					"Not bound, add arbitrary constraint."
+					dontcares at: bitfield name put: 0.
+				].
+			].
+		 ].
 ]
 
 { #category : #testing }
