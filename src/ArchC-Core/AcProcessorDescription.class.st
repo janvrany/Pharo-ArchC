@@ -13,10 +13,7 @@ Class {
 		'endian',
 		'instructionFormats',
 		'instructions',
-		'regsInGPacket',
-		'tgtimm',
 		'architectureName',
-		'abi',
 		'instructionMnemonics',
 		'opcodeDecoder',
 		'opcodeFieldName',
@@ -181,7 +178,7 @@ AcProcessorDescription >> endian [
 	^ endian
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 AcProcessorDescription >> endian: anEndian [
 	endian := anEndian
 ]
@@ -291,35 +288,6 @@ AcProcessorDescription >> fillMnemonicsFrom: aCollectionOfAssociations [
 	instructions do: [:instruction | instruction syntax sort: [ :a :b | a isMoreOrEquallySpecificThan: b  ] ].
 ]
 
-{ #category : #'collaboration with parser' }
-AcProcessorDescription >> fillSemanticsFrom: aCollectionOfAssociations [
-	| semanticAssociations |
-	tgtimm := (aCollectionOfAssociations detect: [ :ass | ass key = 'tgtimm_size' ]) value.
-	abi := (aCollectionOfAssociations detect: [ :ass | ass key = 'abi' ]) value.
-	semanticAssociations := aCollectionOfAssociations select: [ :ass |
-		ass key = 'semantic'].
-	semanticAssociations := semanticAssociations collect: [ :ass | ass value ].
-	semanticAssociations do: [ :ass |
-		| instructionName instruction semanticForest |
-		instructionName := ass key.
-		semanticForest := ass value.
-		instruction := instructions at: instructionName.
-		semanticForest instruction: instruction.
-		"instruction semantics add: semanticForest." "we are in LWISEM, do that here instead"
-	]
-
-]
-
-{ #category : #accessing }
-AcProcessorDescription >> gtViewInstructionsOn: aView [
-	<gtView>
-	^ aView list
-		title: 'Instructions';
-		priority: 8;
-		items: [self instructions values];
-		itemText: [ :insn | insn name asRopedText ]
-]
-
 { #category : #'constant width' }
 AcProcessorDescription >> hasConstantInstructionWidth [
 	^true "BOGUS"
@@ -354,11 +322,9 @@ AcProcessorDescription >> initialize [
 	"  endian := nil."
 	instructionFormats := Dictionary new.
 	instructions := Dictionary new.
-	"  regsInGPacket := nil."
-	"  tgtimm := nil."
 	"  architectureName := nil."
-	"  abi := nil."
-	instructionMnemonics := OrderedCollection with:(AcByte basicNew assembler
+	"  assembler := nil."
+	instructionParsers := OrderedCollection with:(AcByte basicNew assembler
 												   /AcInt16 basicNew assembler
 												   /AcInt32 basicNew assembler
 												   /AcInt64 basicNew assembler)
@@ -412,21 +378,6 @@ AcProcessorDescription >> parsedElementsNamed: key from: aCollectionOfAssociatio
 { #category : #printing }
 AcProcessorDescription >> printOn: aStream [ 
 	aStream nextPutAll: 'AC_ARCH(', self architectureName, ')'
-]
-
-{ #category : #accessing }
-AcProcessorDescription >> regsInGPacket [
-	^ regsInGPacket
-]
-
-{ #category : #accessing }
-AcProcessorDescription >> regsInGPacket: aSequenceableCollectionOfRT [
-	regsInGPacket := aSequenceableCollectionOfRT
-]
-
-{ #category : #accessing }
-AcProcessorDescription >> tgtimm [
-	^ tgtimm 
 ]
 
 { #category : #accessing }
