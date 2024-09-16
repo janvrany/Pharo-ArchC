@@ -72,12 +72,12 @@ AcAsmSyntax >> constraintsSatisfiedBy: aDictionary [
 	"Answer whether the operand valuation given by aDictionary,
 	satisfies the constraints of this syntactic form.
 	Note that aDictionary MUST include everything in <constraints>."
-	constraints associationsDo: [ :constraint |
+	constraints keysAndValuesDo: [ :key :value |
 		| thisValuation |
-		thisValuation := aDictionary at: constraint key ifAbsent: [ nil ].
-		thisValuation = constraint value ifFalse: [ ^false ] ].
+		thisValuation := aDictionary at: key ifAbsent: [ nil ].
+		thisValuation = value ifFalse: [ ^false ] 
+	].
 	^true
-
 ]
 
 { #category : #'API - disassembly' }
