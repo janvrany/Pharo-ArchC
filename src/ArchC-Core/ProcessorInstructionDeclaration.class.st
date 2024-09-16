@@ -329,3 +329,11 @@ ProcessorInstructionDeclaration >> syntax [
 	].
 	^ syntax
 ]
+
+{ #category : #'parser access for construction' }
+ProcessorInstructionDeclaration >> syntax: syntaxArg [
+	self assert: syntaxArg isSequenceable.
+
+	syntax := syntaxArg asArray.
+	syntax do:[:each | each instruction: self ].
+]
