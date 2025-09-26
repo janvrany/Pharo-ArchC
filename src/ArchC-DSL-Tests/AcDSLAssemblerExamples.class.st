@@ -26,7 +26,7 @@ AcDSLAssemblerExamples >> example01_ppc32_spinlock [
 	Typically, those r0, r1 and so on would pool variables in
 	some pool but do not need to.
 	"
-	gprs := AcProcessorDescriptions powerpc64 maps at: 'reg'.
+	gprs := AcProcessorDescriptions powerpc maps at: 'reg'.
 	r0 := AcDSLRegister value: (gprs lookup: '0').
 	r1 := AcDSLRegister value: (gprs lookup: '1').
 	r2 := AcDSLRegister value: (gprs lookup: '2').
@@ -34,7 +34,7 @@ AcDSLAssemblerExamples >> example01_ppc32_spinlock [
 	r4 := AcDSLRegister value: (gprs lookup: '4').
 	"..."
 
-	ccrs := AcProcessorDescriptions powerpc64 maps at: 'ccr'.
+	ccrs := AcProcessorDescriptions powerpc maps at: 'ccr'.
 	c0 := AcDSLRegister value: (ccrs lookup: 'cr0'). 
 
 	"Now we create an instance of assembler for desired
