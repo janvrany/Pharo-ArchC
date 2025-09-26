@@ -155,6 +155,13 @@ AcAsmFormatChunk >> printOn: aStream [
 ]
 
 { #category : #'printing & storing' }
+AcAsmFormatChunk >> unparse [
+	"Format receiver using the syntax recognized by AcAsmFormatParser."
+
+	^String streamContents: [ :s | self unparseOn: s ]
+]
+
+{ #category : #'printing & storing' }
 AcAsmFormatChunk >> unparseOn: aStream [
 	"Print this chunk on `aStream` using the syntax recognized by AcAsmFormatParser."
 
