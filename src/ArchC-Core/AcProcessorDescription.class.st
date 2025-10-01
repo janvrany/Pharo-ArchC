@@ -14,7 +14,7 @@ Class {
 		'instructionFormats',
 		'instructions',
 		'architectureName',
-		'instructionMnemonics',
+		'assembler',
 		'opcodeDecoder',
 		'opcodeFieldName',
 		'opcodeFieldInterval'
@@ -48,11 +48,6 @@ AcProcessorDescription class >> systemIcon [
 ) collect: [ :x | x==1 ifTrue: [ 16rFFFFFFFF ] ifFalse: [ 16rFF000000 ]])
 	offset: 0@0
 
-]
-
-{ #category : #'collaboration with parser' }
-AcProcessorDescription >> addSyntax: aParser [ 
-	instructionMnemonics add: aParser
 ]
 
 { #category : #accessing }
@@ -106,7 +101,28 @@ AcProcessorDescription >> assembleLines: source [
 
 { #category : #assembly }
 AcProcessorDescription >> assembler [
-	^instructionMnemonics 
+	assembler isNil ifTrue: [ 
+		| instructionParsers |
+
+		instructionParsers := OrderedCollection new: instructions size.
+
+		"Add 'data' instruction parsers"
+		instructionParsers add: AcByte basicNew assembler.
+		instructionParsers add: AcInt16 basicNew assembler.
+		instructionParsers add: AcInt32 basicNew assembler.
+		instructionParsers add: AcInt64 basicNew assembler.
+
+		"Add processor instruction parsers"
+		instructions do: [:insnDecl | 
+			insnDecl syntax do: [:syntax | 
+				instructionParsers add: syntax assembler.
+			].
+		].
+
+		"Finally, create a parser that can parse all instructions"
+		assembler := PPChoiceParser withAll: instructionParsers.
+	].
+	^assembler
 ]
 
 { #category : #assertions }
@@ -210,8 +226,6 @@ AcProcessorDescription >> fillFrom: aCollectionOfAssociations [
 	aCollectionOfAssociations do: [:each | 
 		each key = 'ac_isa' ifTrue: [ self fillISAFrom: each value ]
 	].
-
-	instructionMnemonics := PPChoiceParser withAll: instructionMnemonics.
 
 	^self
 ]
@@ -324,10 +338,6 @@ AcProcessorDescription >> initialize [
 	instructions := Dictionary new.
 	"  architectureName := nil."
 	"  assembler := nil."
-	instructionParsers := OrderedCollection with:(AcByte basicNew assembler
-												   /AcInt16 basicNew assembler
-												   /AcInt32 basicNew assembler
-												   /AcInt64 basicNew assembler)
 	"  opcodeDecoder := nil."
 ]
 

@@ -22,7 +22,6 @@ AcSetAsmParser class >> processAssociation: instrNameToSetAsm in: aPDL [
 	instruction addSyntax: setAsm.
 	setAsm source: setAsmSource.
 	setAsm instruction: instruction.
-	aPDL addSyntax: setAsm assembler 
 ]
 
 { #category : #'instance creation' }

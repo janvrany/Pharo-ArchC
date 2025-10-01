@@ -231,7 +231,6 @@ ProcessorInstructionDeclaration >> isa: anAcProcessorDescription [
 				mnemonicSpec source: mnemonicSpecSource.
 				mnemonicSpec instruction: self.
 				syntax at: index put: mnemonicSpec.
-				isa addSyntax: mnemonicSpec assembler                  
 			].
 		].
 		syntax sort: [ :a :b | a isMoreOrEquallySpecificThan: b  ]
