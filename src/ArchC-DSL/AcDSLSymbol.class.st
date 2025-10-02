@@ -29,7 +29,6 @@ AcDSLSymbol >> - delta [
 	relocation addend: relocation addend - delta
 ]
 
-
 { #category : #conversion }
 AcDSLSymbol >> asString [
 	^ value asString

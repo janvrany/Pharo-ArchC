@@ -35,6 +35,16 @@ AcDSLOperand >> isAcDSLSymbol [
 ]
 
 { #category : #accessing }
+AcDSLOperand >> map [
+	"If operand value must be one of the predefined constants, return the
+	 corresponding AcAsmMap instance (defining those constants and their values).
+
+	 Otherwise, return `nil'.
+	"
+	^ nil
+]
+
+{ #category : #accessing }
 AcDSLOperand >> relocation [
 	^ nil
 ]

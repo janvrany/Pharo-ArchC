@@ -9,7 +9,6 @@ Class {
 
 { #category : #utilities }
 AcDSLAssemblerGenerator class >> generate: aClass [
-	AcProcessorDescriptions reset.
 	self new generate: aClass
 ]
 

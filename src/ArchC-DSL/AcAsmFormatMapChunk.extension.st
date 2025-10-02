@@ -4,7 +4,7 @@ Extension { #name : #AcAsmFormatMapChunk }
 AcAsmFormatMapChunk >> assembleDSL: operand into: environment usingOperandInstantiations: operandInstantiations startingAt: operandInstantiationStartIdx [
 	| operandInstantation |
 
-	operand isAcDSLRegister ifFalse: [
+	operand map = self map ifFalse: [
 		AcDSLInvalidOperandError signal:'Expecting register but got ' , operand printString , ' (', operand class name ,')'.
 		^ 0
 	].

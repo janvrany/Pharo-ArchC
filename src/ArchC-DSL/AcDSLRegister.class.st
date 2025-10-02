@@ -28,6 +28,11 @@ AcDSLRegister >> isAcDSLRegister [
 ]
 
 { #category : #accessing }
+AcDSLRegister >> map [
+	^ value map
+]
+
+{ #category : #accessing }
 AcDSLRegister >> name [
 	^ value name
 ]
